@@ -3,6 +3,7 @@ const KoaRouter = require("koa-router");
 const json = require("koa-json");
 const path = require("path");
 const render = require("koa-ejs");
+const bodyParser = require("koa-bodyparser");
 
 const app = new Koa();
 const router = new KoaRouter();
@@ -15,19 +16,11 @@ const tasks = [
   "Mentor others"
 ];
 
-// JSON prettier
+// Standard Middleware
 app.use(json());
+app.use(bodyParser());
 
-// // Super simple koa server without routing yet
-// app.use(async ctx => (ctx.body = { msg: 'Hello World' }));
-
-// Basic routes utilizing router middleware
-// router.get('/', ctx => ctx.body = 'Hello, this is a basic Koa server');
-// router.get('/booger', ctx => ctx.body = 'Hey, you picked this route!');
-// router.get('/array', ctx => ctx.body = ['a', 'b', 'c', 'd']);
-// router.get('/object', ctx => ctx.body = {can: 'easily', print: 'json', obj: 'here'});
-// router.get('*', ctx => ctx.body = 'catch all route');
-
+// EJS Templating Engine
 render(app, {
   root: path.join(__dirname, "views"),
   layout: "layout",
@@ -36,15 +29,35 @@ render(app, {
   debug: false
 });
 
-// Index
-router.get("/", async ctx => {
+// API
+router.get("/api/tasks", ctx => (ctx.body = tasks));
+
+// Routes
+router.get("/", index);
+router.get("/add", showAdd);
+router.post("/add", add);
+router.get("*", ctx => (ctx.body = "Unmatached route return to /"));
+
+// List of tasks
+async function index(ctx) {
   await ctx.render("index", {
     title: "List of tasks",
     msg:
       "In this app, you'll be able to declutter your memory by making use of computer memory!",
     tasks: tasks
   });
-});
+}
+
+// Show add page
+async function showAdd(ctx) {
+  await ctx.render("add");
+}
+
+// Add task
+async function add(ctx) {
+  tasks.push(ctx.request.body.task); //
+  ctx.redirect("/");
+}
 
 // Router Middleware
 app.use(router.routes()).use(router.allowedMethods());
