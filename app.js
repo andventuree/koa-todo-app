@@ -7,6 +7,14 @@ const render = require("koa-ejs");
 const app = new Koa();
 const router = new KoaRouter();
 
+// Temporary substitute for Database
+const tasks = [
+  "Always be coding",
+  "Read tech blogs",
+  "Take notes!",
+  "Mentor others"
+];
+
 // JSON prettier
 app.use(json());
 
@@ -30,8 +38,12 @@ render(app, {
 
 // Index
 router.get("/", async ctx => {
-  console.log();
-  await ctx.render("index");
+  await ctx.render("index", {
+    title: "List of tasks",
+    msg:
+      "In this app, you'll be able to declutter your memory by making use of computer memory!",
+    tasks: tasks
+  });
 });
 
 // Router Middleware

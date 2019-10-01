@@ -1,6 +1,8 @@
-<div class="jumbotron">
-  <h1 class="display-4">Hello, world!</h1>
-  <p class="lead">This is the start of a to do app!</p>
-  <hr class="my-4">
-  Its pretty empty at the moment but stay tuned!!</p>
-</div>
+<h1><%- title %></h1>
+<p><%- msg %></p>
+
+<ul class="list-group">
+  <% tasks.forEach(task => { %>
+  <li class="list-group-item"><%= task %></li>
+  <% }); %>
+</ul>
